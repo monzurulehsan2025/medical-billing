@@ -54,3 +54,22 @@ def test_perform_action_invalid_invoice():
     assert response.status_code == 404
     data = response.json()
     assert data["detail"] == "Invoice not found"
+
+def test_get_insights_invalid_invoice():
+    """Test retrieving insights for a non-existent invoice"""
+    response = client.get("/api/insights/INV-9999-999")
+    assert response.status_code == 200
+    data = response.json()
+    assert isinstance(data, list)
+    assert len(data) == 0
+
+def test_perform_action_invalid_action_type():
+    """Test performing an action with an invalid action type"""
+    payload = {
+        "action": "INVALID_ACTION",
+        "notes": "Testing invalid action"
+    }
+    response = client.post("/api/invoices/INV-2023-001/action", json=payload)
+    assert response.status_code == 400
+    data = response.json()
+    assert data["detail"] == "Invalid action"
