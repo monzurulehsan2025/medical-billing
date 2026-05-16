@@ -73,3 +73,16 @@ def test_perform_action_invalid_action_type():
     assert response.status_code == 400
     data = response.json()
     assert data["detail"] == "Invalid action"
+
+def test_perform_action_reject():
+    """Test performing a REJECT action on an invoice"""
+    payload = {
+        "action": "REJECT",
+        "notes": "Rejected due to unapproved expenses."
+    }
+    response = client.post("/api/invoices/INV-2023-003/action", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["success"] is True
+    assert data["updatedStatus"] == "REJECTED"
+    assert "successfully updated to REJECTED" in data["message"]
